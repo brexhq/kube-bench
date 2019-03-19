@@ -1,3 +1,33 @@
+# Brex fork
+
+This fork of kube-bench was used to perform a security scan of our kops cluster on March 18, 2019. The results of the scan are [here](https://paper.dropbox.com/doc/kube-bench-security-scan--AZmcFtuCnc2i2F13dE4XqlKEAg-DO709iKV0dwbs65uMZR0V).
+
+To run the scan again:
+
+1. Make sure your current context is `k8s-prod.brexapps.io`:
+
+```bash
+kubectl config current-context
+```
+
+2. Apply the job configuration:
+
+```bash
+kubectl apply -f job-master.yaml
+kubectl apply -f job-node.yaml
+```
+
+In this case, we're running the master node scan. To run the node scan, apply `job-node.yaml`.
+
+3. Wait for the job pod to enter a "Completed" state...
+4. Get the results from the pod logs:
+
+```bash
+kubectl get po | grep kube-master | awk '{print $1}' | xargs kubectl logs
+```
+
+---
+
 [![Build Status](https://travis-ci.org/aquasecurity/kube-bench.svg?branch=master)](https://travis-ci.org/aquasecurity/kube-bench)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Docker image](https://images.microbadger.com/badges/image/aquasec/kube-bench.svg)](https://microbadger.com/images/aquasec/kube-bench "Get your own image badge on microbadger.com")
@@ -70,7 +100,23 @@ k logs kube-bench-j76s9
 
 You can still force to run specific master or node checks using respectively `job-master.yaml` and `job-node.yaml`.
 
-To run the tests on the master node, the pod needs to be scheduled on that node. This involves setting a nodeSelector and tolerations in the pod spec.
+To run the tests on the $ kubectl apply -f job.yaml
+job.batch/kube-bench created
+
+$ kubectl get pods
+NAME                      READY   STATUS              RESTARTS   AGE
+kube-bench-j76s9   0/1     ContainerCreating   0          3s
+
+# Wait for a few seconds for the job to complete
+$ kubectl get pods
+NAME                      READY   STATUS      RESTARTS   AGE
+kube-bench-j76s9   0/1     Completed   0          11s
+
+# The results are held in the pod's logs
+k logs kube-bench-j76s9
+[INFO] 1 Master Node Security Configuration
+[INFO] 1.1 API Server
+...master node, the pod needs to be scheduled on that node. This involves setting a nodeSelector and tolerations in the pod spec.
 
 The default labels applied to master nodes has changed since Kubernetes 1.11, so if you are using an older version you may need to modify the nodeSelector and tolerations to run the job on the master node.
 
