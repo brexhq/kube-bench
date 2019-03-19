@@ -14,7 +14,6 @@ kubectl config current-context
 
 ```bash
 kubectl apply -f job-master.yaml
-kubectl apply -f job-node.yaml
 ```
 
 In this case, we're running the master node scan. To run the node scan, apply `job-node.yaml`.
